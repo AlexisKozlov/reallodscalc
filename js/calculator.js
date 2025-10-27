@@ -147,42 +147,35 @@ class TalentCalculator {
         });
     }
 
-    renderTalentBranch(branch, branchKey) {
-        const container = document.createElement('div');
-        container.className = 'talent-branch-container';
+   renderMilestoneBranch(branch, branchKey) {
+    const container = document.createElement('div');
+    container.className = 'milestone-branch';
 
-        branch.rows.forEach((row, rowIndex) => {
-            const rowElement = document.createElement('div');
-            rowElement.className = 'talent-row';
+    const gridContainer = document.createElement('div');
+    gridContainer.className = 'milestone-grid';
 
-            row.talents.forEach((talent, talentIndex) => {
-                const talentElement = document.createElement('div');
-                const currentLevel = this.selectedTalents.get(talent.id) || 0;
-                const isActive = currentLevel > 0;
-                const isLocked = !this.checkTalentDependencies(talent);
+    branch.grid.forEach((row, rowIndex) => {
+        row.forEach((milestone, colIndex) => {
+            const cellElement = document.createElement('div');
+            const isActive = this.selectedMilestones.has(milestone.id);
+            const isLocked = !this.checkMilestoneDependencies(milestone);
 
-                talentElement.className = `talent-node ${isActive ? 'active' : ''} ${isLocked ? 'locked' : ''}`;
-                talentElement.innerHTML = `
-                    <div class="talent-icon">${talent.icon}</div>
-                    <div class="talent-name">${talent.name}</div>
-                    <div class="talent-level">${currentLevel}/${talent.maxLevel}</div>
-                `;
-                talentElement.title = `${talent.name}\n${talent.description}\nУровень: ${currentLevel}/${talent.maxLevel}`;
-                
-                talentElement.addEventListener('click', () => {
-                    if (!isLocked) {
-                        this.toggleTalent(talent.id, branchKey, rowIndex, talentIndex);
-                    }
-                });
-
-                rowElement.appendChild(talentElement);
+            cellElement.className = `milestone-cell ${isActive ? 'active' : ''} ${isLocked ? 'locked' : ''}`;
+            cellElement.title = `${milestone.name}\n${milestone.description}`;
+            
+            cellElement.addEventListener('click', () => {
+                if (!isLocked) {
+                    this.toggleMilestone(milestone.id, branchKey, rowIndex, colIndex);
+                }
             });
 
-            container.appendChild(rowElement);
+            gridContainer.appendChild(cellElement);
         });
+    });
 
-        return container;
-    }
+    container.appendChild(gridContainer);
+    return container;
+}
 
     renderMilestoneBranch(branch, branchKey) {
         const container = document.createElement('div');
