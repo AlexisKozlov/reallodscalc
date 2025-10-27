@@ -123,29 +123,35 @@ class TalentCalculator {
         return false;
     }
 
-    renderBranches() {
-        const container = document.querySelector('.talent-trees');
-        container.innerHTML = '';
+renderBranches() {
+    const container = document.querySelector('.talent-trees');
+    container.innerHTML = '';
 
-        if (!this.currentClass) return;
+    if (!this.currentClass) return;
 
-        const classData = classesData[this.currentClass];
+    const classData = classesData[this.currentClass];
+    
+    // Создаем контейнер для горизонтального расположения веток
+    const branchesContainer = document.createElement('div');
+    branchesContainer.className = 'branches-container';
+    
+    // Рендерим все 4 ветки последовательно
+    Object.entries(classData.branches).forEach(([branchKey, branch]) => {
+        const branchElement = document.createElement('div');
+        branchElement.className = 'talent-branch';
+        branchElement.innerHTML = `<h3>${branch.name}</h3>`;
         
-        // Рендерим все 4 ветки
-        Object.entries(classData.branches).forEach(([branchKey, branch]) => {
-            const branchElement = document.createElement('div');
-            branchElement.className = 'talent-branch';
-            branchElement.innerHTML = `<h3>${branch.name}</h3>`;
-            
-            if (branch.type === 'talents') {
-                branchElement.appendChild(this.renderTalentBranch(branch, branchKey));
-            } else if (branch.type === 'milestone') {
-                branchElement.appendChild(this.renderMilestoneBranch(branch, branchKey));
-            }
-            
-            container.appendChild(branchElement);
-        });
-    }
+        if (branch.type === 'talents') {
+            branchElement.appendChild(this.renderTalentBranch(branch, branchKey));
+        } else if (branch.type === 'milestone') {
+            branchElement.appendChild(this.renderMilestoneBranch(branch, branchKey));
+        }
+        
+        branchesContainer.appendChild(branchElement);
+    });
+    
+    container.appendChild(branchesContainer);
+}
 
     renderTalentBranch(branch, branchKey) {
         const container = document.createElement('div');
@@ -191,14 +197,18 @@ class TalentCalculator {
     const gridContainer = document.createElement('div');
     gridContainer.className = 'milestone-grid';
 
+    // Рендерим все клетки сетки 9x9
     branch.grid.forEach((row, rowIndex) => {
         row.forEach((milestone, colIndex) => {
             const cellElement = document.createElement('div');
             const isActive = this.selectedMilestones.has(milestone.id);
             const isLocked = !this.checkMilestoneDependencies(milestone);
 
-            cellElement.className = `milestone-cell ${isActive ? 'active' : ''} ${isLocked ? 'locked' : ''}`;
+            cellElement.className = `milestone-cell ${isActive ? 'active' : ''} ${isLocked ? 'locked' : ''} ${milestone.isStart ? 'start-cell' : ''}`;
             cellElement.title = `${milestone.name}\n${milestone.description}`;
+            
+            // Добавляем номер клетки для наглядности
+            cellElement.innerHTML = `<span>${rowIndex+1},${colIndex+1}</span>`;
             
             cellElement.addEventListener('click', () => {
                 if (!isLocked) {
