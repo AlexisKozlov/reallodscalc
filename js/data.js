@@ -70,3 +70,4 @@ const allClasses = [
     { id: "summoner", name: "Призыватель", icon: "👁️" },
     { id: "bard", name: "Бард", icon: "🎵" }
 ];
+
