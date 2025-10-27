@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор талантов Аллоды Онлайн 5.0.2</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/classes.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Калькулятор талантов Аллоды 5.0.2</h1>
+        </header>
+
+        <div class="class-selector">
+            <h3>Выберите класс:</h3>
+            <div class="class-buttons">
+                <!-- Кнопки будут генерироваться через JS -->
+            </div>
+        </div>
+
+        <div class="calculator-container">
+            <div class="talent-trees">
+                <!-- Деревья талантов будут генерироваться здесь -->
+            </div>
+
+            <div class="calculator-info">
+                <div class="points-info">
+                    <span>Очки талантов: </span>
+                    <span id="current-points">0</span>
+                    <span>/</span>
+                    <span id="max-points">71</span>
+                </div>
+                <div class="controls">
+                    <button id="reset-btn">Сбросить</button>
+                    <button id="export-btn">Экспорт</button>
+                    <button id="import-btn">Импорт</button>
+                </div>
+                <div class="build-code">
+                    <textarea id="build-code" placeholder="Код билда появится здесь..." readonly></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/calculator.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
