@@ -209,3 +209,135 @@ header h1 {
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     }
 }
+
+
+
+/////////////
+
+/* Добавляем в конец файла */
+
+/* Стили для веток вех */
+.milestone-tree {
+    margin-bottom: 30px;
+}
+
+.milestone-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 3px;
+    margin-top: 10px;
+}
+
+.milestone-cell {
+    aspect-ratio: 1;
+    background: linear-gradient(45deg, #2d3748, #4a5568);
+    border: 1px solid #4a5568;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.milestone-cell:hover {
+    border-color: #4cc9f0;
+    transform: scale(1.1);
+}
+
+.milestone-cell.active {
+    border-color: #f72585;
+    background: linear-gradient(45deg, #7209b7, #3a0ca3);
+    box-shadow: 0 0 8px rgba(247, 37, 133, 0.5);
+}
+
+.milestone-cell.locked {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Стили для ветки талантов */
+.talent-branch {
+    margin-bottom: 30px;
+}
+
+.talent-row {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+    min-height: 80px;
+}
+
+.talent-node {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(45deg, #2d3748, #4a5568);
+    border: 2px solid #4a5568;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.talent-node:hover {
+    border-color: #4cc9f0;
+    transform: scale(1.1);
+}
+
+.talent-node.active {
+    border-color: #f72585;
+    background: linear-gradient(45deg, #7209b7, #3a0ca3);
+    box-shadow: 0 0 15px rgba(247, 37, 133, 0.5);
+}
+
+.talent-node.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.talent-icon {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+.talent-name {
+    font-size: 0.7em;
+    text-align: center;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.talent-level {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 1px 3px;
+    border-radius: 2px;
+    font-size: 0.6em;
+}
+
+/* Коннекторы между талантами */
+.talent-connectors {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.connector {
+    position: absolute;
+    background: #4a5568;
+    z-index: -1;
+}
+
+.connector.active {
+    background: #f72585;
+}
