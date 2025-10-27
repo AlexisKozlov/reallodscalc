@@ -98,37 +98,49 @@ const classesData = {
     // Добавь: bestnik, scout, mage, priest, summoner, bard...
 };
 
-// Функция для создания сетки вех 9x9
+// Функция для создания сетки вех 9x9 с началом в середине
 function createMilestoneGrid() {
     const grid = [];
     for (let row = 0; row < 9; row++) {
         const gridRow = [];
         for (let col = 0; col < 9; col++) {
+            const isStartCell = row === 4 && col === 4; // Центральная клетка
+            
             gridRow.push({
                 id: `milestone_${row}_${col}`,
                 name: `Веха ${row+1}-${col+1}`,
                 description: `Эффект вехи в позиции ${row+1},${col+1}`,
                 dependencies: getMilestoneDependencies(row, col),
-                active: false
+                active: false,
+                isStart: isStartCell
             });
         }
         grid.push(gridRow);
     }
     return grid;
 }
-
-// Функция для определения зависимостей вех
+// Функция для определения зависимостей вех (начинаем из центра)
 function getMilestoneDependencies(row, col) {
     const deps = [];
+    const centerRow = 4;
+    const centerCol = 4;
     
-    // Зависимость от предыдущей строки
-    if (row > 0) {
-        deps.push(`milestone_${row-1}_${col}`);
+    // Если это стартовая клетка - нет зависимостей
+    if (row === centerRow && col === centerCol) {
+        return [];
     }
     
-    // Зависимость от предыдущего столбца (если не первый)
-    if (col > 0) {
+    // Зависимость от ближайшей клетки к центру
+    if (row > centerRow) {
+        deps.push(`milestone_${row-1}_${col}`);
+    } else if (row < centerRow) {
+        deps.push(`milestone_${row+1}_${col}`);
+    }
+    
+    if (col > centerCol) {
         deps.push(`milestone_${row}_${col-1}`);
+    } else if (col < centerCol) {
+        deps.push(`milestone_${row}_${col+1}`);
     }
     
     return deps;
