@@ -105,7 +105,7 @@
             text-align: center;
         }
         
-        /* Вехи - увеличенные клетки */
+        /* Вехи */
         .milestone-branch { 
             background: rgba(255,255,255,0.1); 
             padding: 15px; 
@@ -131,11 +131,6 @@
             cursor: pointer;
             transition: all 0.3s;
             position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 8px;
-            color: rgba(255,255,255,0.7);
         }
         .milestone:hover { border-color: #4cc9f0; transform: scale(1.2); }
         .milestone.active { background: #f72585; border-color: #f72585; }
@@ -145,26 +140,34 @@
             border-color: #4cc9f0; 
             box-shadow: 0 0 10px rgba(76, 201, 240, 0.5);
         }
-        .milestone.start::after {
-            content: "★";
-            position: absolute;
-            font-size: 10px;
-            color: white;
-        }
         
-        /* Тултипы */
-        .tooltip {
+        /* Простые CSS-тултипы */
+        .talent:hover::after,
+        .milestone:hover::after,
+        .milestone-branch:hover::after {
+            content: attr(data-tooltip);
             position: absolute;
-            background: rgba(0, 0, 0, 0.9);
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.95);
             color: white;
             padding: 10px;
             border-radius: 6px;
             font-size: 12px;
             white-space: pre-line;
             z-index: 1000;
+            min-width: 200px;
             max-width: 250px;
             border: 1px solid #4cc9f0;
             pointer-events: none;
+        }
+        
+        .milestone-branch:hover::after {
+            bottom: auto;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
         }
         
         /* Панель информации */
@@ -335,17 +338,17 @@
                     { 
                         name: "⚡ Веха Силы", 
                         grid: createGrid(),
-                        desc: "Увеличивает боевую эффективность и урон"
+                        desc: "Увеличивает боевую эффективность и урон\n\nРазвивайте эту ветку для увеличения урона"
                     },
                     { 
                         name: "🛡️ Веха Защиты", 
                         grid: createGrid(),
-                        desc: "Повышает выживаемость и защитные способности"
+                        desc: "Повышает выживаемость и защитные способности\n\nУлучшает защиту и сопротивление урону"
                     },
                     { 
                         name: "🎯 Веха Тактики", 
                         grid: createGrid(),
-                        desc: "Улучшает тактические возможности и контроль"
+                        desc: "Улучшает тактические возможности и контроль\n\nДает преимущества в управлении боем"
                     }
                 ]
             },
@@ -363,21 +366,20 @@
                     { 
                         name: "🌟 Веха Света", 
                         grid: createGrid(),
-                        desc: "Усиливает светлые заклинания и исцеление"
+                        desc: "Усиливает светлые заклинания и исцеление\n\nУлучшает магические способности"
                     },
                     { 
                         name: "🛡️ Веха Щита", 
                         grid: createGrid(),
-                        desc: "Улучшает защитные способности и блок"
+                        desc: "Улучшает защитные способности и блок\n\nПовышает живучесть в бою"
                     },
                     { 
                         name: "🙏 Веха Веры", 
                         grid: createGrid(),
-                        desc: "Повышает духовную силу и сопротивление"
+                        desc: "Повышает духовную силу и сопротивление\n\nДает бонусы к магической защите"
                     }
                 ]
             }
-            // ... добавь остальные классы
         };
 
         function createGrid() {
@@ -392,8 +394,8 @@
                         start: isStart,
                         name: `Веха ${i+1}-${j+1}`,
                         desc: isStart ? 
-                            "Стартовая точка\nНачните развитие вех отсюда" : 
-                            `Улучшение характеристики\nЭффект зависит от положения в сетке\n\nТребуется активация соседней вехи`
+                            "Стартовая точка\nНачните развитие вех отсюда\n\nНажмите чтобы активировать" : 
+                            `Улучшение характеристики\nПозиция: ${i+1},${j+1}\n\nТребуется активация соседней вехи`
                     });
                 }
                 grid.push(row);
@@ -407,28 +409,6 @@
         let milestonePoints = 0;
         const selectedTalents = {};
         const selectedMilestones = {};
-
-        // ТУЛТИПЫ
-        function showTooltip(element, text) {
-            const tooltip = document.createElement('div');
-            tooltip.className = 'tooltip';
-            tooltip.textContent = text;
-            
-            const rect = element.getBoundingClientRect();
-            tooltip.style.left = (rect.left + window.scrollX) + 'px';
-            tooltip.style.top = (rect.top + window.scrollY - 10) + 'px';
-            
-            document.body.appendChild(tooltip);
-            
-            element._tooltip = tooltip;
-        }
-
-        function hideTooltip(element) {
-            if (element._tooltip) {
-                element._tooltip.remove();
-                element._tooltip = null;
-            }
-        }
 
         // ИНИЦИАЛИЗАЦИЯ
         function init() {
@@ -489,13 +469,8 @@
                         <div class="talent-level">${currentLevel}/${talent.max}</div>
                     `;
                     
-                    // Тултипы для талантов
-                    talentDiv.addEventListener('mouseenter', (e) => {
-                        showTooltip(talentDiv, `${talent.name}\n\n${talent.desc}`);
-                    });
-                    talentDiv.addEventListener('mouseleave', () => {
-                        hideTooltip(talentDiv);
-                    });
+                    // Добавляем тултип через data-атрибут
+                    talentDiv.setAttribute('data-tooltip', `${talent.name}\n\n${talent.desc}\n\nУровень: ${currentLevel}/${talent.max}`);
                     
                     talentDiv.onclick = () => toggleTalent(talent.id, talent.max, talent.req);
                     rowDiv.appendChild(talentDiv);
@@ -513,12 +488,7 @@
                 milestoneBranch.innerHTML = `<h3>${milestone.name}</h3>`;
                 
                 // Тултип для всей ветки вех
-                milestoneBranch.addEventListener('mouseenter', (e) => {
-                    showTooltip(milestoneBranch, `${milestone.name}\n\n${milestone.desc}`);
-                });
-                milestoneBranch.addEventListener('mouseleave', () => {
-                    hideTooltip(milestoneBranch);
-                });
+                milestoneBranch.setAttribute('data-tooltip', `${milestone.name}\n\n${milestone.desc}`);
                 
                 const grid = document.createElement('div');
                 grid.className = 'milestone-grid';
@@ -533,13 +503,8 @@
                         const isLocked = !cell.start && !isMilestoneAvailable(cell.id, i, j);
                         if (isLocked) cellDiv.classList.add('locked');
                         
-                        // Тултипы для вех
-                        cellDiv.addEventListener('mouseenter', (e) => {
-                            showTooltip(cellDiv, `${cell.name}\n\n${cell.desc}`);
-                        });
-                        cellDiv.addEventListener('mouseleave', () => {
-                            hideTooltip(cellDiv);
-                        });
+                        // Тултип для вехи
+                        cellDiv.setAttribute('data-tooltip', cell.desc);
                         
                         cellDiv.onclick = () => toggleMilestone(cell.id, i, j);
                         grid.appendChild(cellDiv);
