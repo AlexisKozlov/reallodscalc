@@ -81,38 +81,52 @@ header h1 {
     min-height: 600px;
 }
 
-.talent-tree {
-    display: none;
-}
-
-.talent-tree.active {
-    display: block;
-}
-
-.talent-tree-header {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.talent-tree-header h2 {
-    color: #4cc9f0;
-    font-size: 1.8em;
-}
-
-.talents-grid {
+/* Основной контейнер для всех веток */
+.branches-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-    gap: 15px;
-    justify-items: center;
+    grid-template-columns: 1fr 100px 100px 100px;
+    gap: 20px;
+    align-items: start;
 }
 
-.talent {
-    width: 80px;
-    height: 80px;
+/* Общие стили для всех веток */
+.talent-branch {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 15px;
+    min-height: 400px;
+}
+
+.talent-branch h3 {
+    color: #4cc9f0;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    border-bottom: 1px solid #4a5568;
+    padding-bottom: 8px;
+}
+
+/* Стили для ветки талантов (первая колонка) */
+.talent-branch-container {
+    width: 100%;
+}
+
+.talent-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    min-height: 60px;
+}
+
+.talent-node {
+    width: 60px;
+    height: 60px;
     background: linear-gradient(45deg, #2d3748, #4a5568);
     border: 2px solid #4a5568;
-    border-radius: 10px;
+    border-radius: 8px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
@@ -120,33 +134,179 @@ header h1 {
     position: relative;
 }
 
-.talent:hover {
+.talent-node:hover {
     border-color: #4cc9f0;
     transform: scale(1.1);
 }
 
-.talent.active {
+.talent-node.active {
+    border-color: #f72585;
+    background: linear-gradient(45deg, #7209b7, #3a0ca3);
+    box-shadow: 0 0 12px rgba(247, 37, 133, 0.5);
+}
+
+.talent-node.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.talent-icon {
+    font-size: 1.2em;
+    margin-bottom: 3px;
+}
+
+.talent-name {
+    font-size: 0.6em;
+    text-align: center;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1;
+}
+
+.talent-level {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 1px 3px;
+    border-radius: 2px;
+    font-size: 0.5em;
+}
+
+/* Стили для веток вех (последние 3 колонки) */
+.milestone-branch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.milestone-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 10px);
+    grid-template-rows: repeat(9, 10px);
+    gap: 2px;
+    margin-top: 10px;
+    position: relative;
+}
+
+/* Увеличиваем клетки вех в 10 раз */
+.milestone-cell {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(45deg, #2d3748, #4a5568);
+    border: 2px solid #4a5568;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    text-align: center;
+    padding: 5px;
+    color: #fff;
+}
+
+.milestone-cell:hover {
+    border-color: #4cc9f0;
+    transform: scale(1.05);
+}
+
+.milestone-cell.active {
     border-color: #f72585;
     background: linear-gradient(45deg, #7209b7, #3a0ca3);
     box-shadow: 0 0 15px rgba(247, 37, 133, 0.5);
 }
 
-.talent.locked {
-    opacity: 0.5;
+.milestone-cell.locked {
+    opacity: 0.4;
     cursor: not-allowed;
 }
 
-.talent-level {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 2px 5px;
-    border-radius: 3px;
-    font-size: 0.8em;
+/* Центрируем сетку вех и делаем начальную точку в середине */
+.milestone-grid-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
 }
 
+/* Подсветка стартовой клетки */
+.milestone-cell.start-cell {
+    border-color: #4cc9f0;
+    background: linear-gradient(45deg, #4361ee, #4cc9f0);
+}
+
+.milestone-cell.start-cell::before {
+    content: "★";
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    color: #4cc9f0;
+    font-size: 0.7em;
+}
+
+/* Стили для тултипов */
+.milestone-cell {
+    position: relative;
+}
+
+.milestone-cell::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: pre-line;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    min-width: 150px;
+    text-align: center;
+}
+
+.milestone-cell:hover::after {
+    opacity: 1;
+}
+
+.talent-node {
+    position: relative;
+}
+
+.talent-node::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: pre-line;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    min-width: 150px;
+    text-align: center;
+}
+
+.talent-node:hover::after {
+    opacity: 1;
+}
+
+/* Панель информации калькулятора */
 .calculator-info {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
@@ -200,155 +360,6 @@ header h1 {
     font-family: monospace;
 }
 
-@media (max-width: 768px) {
-    .calculator-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .class-buttons {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    }
-}
-
-
-
-/////////////
-
-/* Добавляем в конец файла */
-
-/* Стили для веток вех */
-.milestone-tree {
-    margin-bottom: 20px;
-}
-
-.milestone-grid {
-    display: grid;
-    grid-template-columns: repeat(9, 10px);
-    grid-template-rows: repeat(9, 10px);
-    gap: 2px;
-    margin-top: 10px;
-}
-
-.milestone-cell {
-    width: 10px;
-    height: 10px;
-    background: linear-gradient(45deg, #2d3748, #4a5568);
-    border: 1px solid #4a5568;
-    border-radius: 1px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    position: relative;
-}
-
-.milestone-cell:hover {
-    border-color: #4cc9f0;
-    transform: scale(1.3);
-}
-
-.milestone-cell.active {
-    border-color: #f72585;
-    background: linear-gradient(45deg, #7209b7, #3a0ca3);
-    box-shadow: 0 0 5px rgba(247, 37, 133, 0.5);
-}
-
-.milestone-cell.locked {
-    opacity: 0.3;
-    cursor: not-allowed;
-}
-
-/* Контейнер для сетки вех с центрированием */
-.milestone-branch {
-    display: flex;
-    justify-content: center;
-    margin: 10px 0;
-}
-
-.milestone-row {
-    display: contents; /* Убираем стандартное поведение строк */
-}
-
-/* Адаптивность для мобильных */
-@media (max-width: 768px) {
-    .milestone-grid {
-        grid-template-columns: repeat(9, 8px);
-        grid-template-rows: repeat(9, 8px);
-        gap: 1px;
-    }
-    
-    .milestone-cell {
-        width: 8px;
-        height: 8px;
-    }
-}
-
-/* Стили для ветки талантов */
-.talent-branch {
-    margin-bottom: 30px;
-}
-
-.talent-row {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 10px;
-    min-height: 80px;
-}
-
-.talent-node {
-    width: 70px;
-    height: 70px;
-    background: linear-gradient(45deg, #2d3748, #4a5568);
-    border: 2px solid #4a5568;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.talent-node:hover {
-    border-color: #4cc9f0;
-    transform: scale(1.1);
-}
-
-.talent-node.active {
-    border-color: #f72585;
-    background: linear-gradient(45deg, #7209b7, #3a0ca3);
-    box-shadow: 0 0 15px rgba(247, 37, 133, 0.5);
-}
-
-.talent-node.locked {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.talent-icon {
-    font-size: 1.5em;
-    margin-bottom: 5px;
-}
-
-.talent-name {
-    font-size: 0.7em;
-    text-align: center;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.talent-level {
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 1px 3px;
-    border-radius: 2px;
-    font-size: 0.6em;
-}
-
 /* Коннекторы между талантами */
 .talent-connectors {
     position: absolute;
@@ -367,4 +378,158 @@ header h1 {
 
 .connector.active {
     background: #f72585;
+}
+
+/* Адаптивность для планшетов */
+@media (max-width: 1200px) {
+    .branches-container {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .milestone-cell {
+        width: 60px;
+        height: 60px;
+        font-size: 0.6em;
+    }
+    
+    .calculator-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    header h1 {
+        font-size: 2em;
+    }
+    
+    .class-buttons {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    
+    .branches-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .milestone-cell {
+        width: 40px;
+        height: 40px;
+        font-size: 0.5em;
+        padding: 2px;
+    }
+    
+    .talent-node {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .talent-icon {
+        font-size: 1em;
+    }
+    
+    .talent-name {
+        font-size: 0.5em;
+    }
+    
+    .calculator-info {
+        padding: 15px;
+    }
+    
+    .controls {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Адаптивность для очень маленьких экранов */
+@media (max-width: 480px) {
+    .milestone-cell {
+        width: 30px;
+        height: 30px;
+        font-size: 0.4em;
+    }
+    
+    .talent-node {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .talent-row {
+        gap: 5px;
+    }
+    
+    .class-buttons {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+}
+
+/* Стили для скроллбара */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #4361ee, #3a0ca3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(45deg, #f72585, #b5179e);
+}
+
+/* Анимации */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(76, 201, 240, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(76, 201, 240, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(76, 201, 240, 0);
+    }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Стили для выбранного класса */
+.class-selected {
+    border-left: 4px solid #4cc9f0;
+    padding-left: 10px;
+}
+
+/* Стили для заблокированных элементов */
+.locked {
+    filter: grayscale(0.7);
+}
+
+/* Стили для доступных для изучения элементов */
+.available {
+    border-color: #4cc9f0 !important;
+    animation: pulse 2s infinite;
+}
+
+/* Стили для максимально прокачанных талантов */
+.talent-node.max-level {
+    border-color: #ffd700;
+    background: linear-gradient(45deg, #ffd700, #ff6b00);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+/* Стили для активных вех */
+.milestone-cell.max-level {
+    border-color: #ffd700;
+    background: linear-gradient(45deg, #ffd700, #ff6b00);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
 }
