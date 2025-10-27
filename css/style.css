@@ -218,21 +218,23 @@ header h1 {
 
 /* Стили для веток вех */
 .milestone-tree {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .milestone-grid {
     display: grid;
-    grid-template-columns: repeat(9, 1fr);
-    gap: 3px;
+    grid-template-columns: repeat(9, 10px);
+    grid-template-rows: repeat(9, 10px);
+    gap: 2px;
     margin-top: 10px;
 }
 
 .milestone-cell {
-    aspect-ratio: 1;
+    width: 10px;
+    height: 10px;
     background: linear-gradient(45deg, #2d3748, #4a5568);
     border: 1px solid #4a5568;
-    border-radius: 3px;
+    border-radius: 1px;
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
@@ -240,18 +242,43 @@ header h1 {
 
 .milestone-cell:hover {
     border-color: #4cc9f0;
-    transform: scale(1.1);
+    transform: scale(1.3);
 }
 
 .milestone-cell.active {
     border-color: #f72585;
     background: linear-gradient(45deg, #7209b7, #3a0ca3);
-    box-shadow: 0 0 8px rgba(247, 37, 133, 0.5);
+    box-shadow: 0 0 5px rgba(247, 37, 133, 0.5);
 }
 
 .milestone-cell.locked {
     opacity: 0.3;
     cursor: not-allowed;
+}
+
+/* Контейнер для сетки вех с центрированием */
+.milestone-branch {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+.milestone-row {
+    display: contents; /* Убираем стандартное поведение строк */
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 768px) {
+    .milestone-grid {
+        grid-template-columns: repeat(9, 8px);
+        grid-template-rows: repeat(9, 8px);
+        gap: 1px;
+    }
+    
+    .milestone-cell {
+        width: 8px;
+        height: 8px;
+    }
 }
 
 /* Стили для ветки талантов */
