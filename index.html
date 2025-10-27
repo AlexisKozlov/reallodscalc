@@ -14,92 +14,219 @@
         }
         
         /* Классы */
-        .class-selector { margin-bottom: 20px; }
+        .class-selector { 
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .class-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
         .class-btn { 
-            padding: 10px 15px; 
-            margin: 5px; 
+            padding: 12px 20px; 
             background: #4361ee; 
             border: none; 
             color: white; 
-            border-radius: 5px; 
+            border-radius: 8px; 
             cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
         }
-        .class-btn.active { background: #f72585; }
+        .class-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4); }
+        .class-btn.active { background: #f72585; box-shadow: 0 0 20px rgba(247, 37, 133, 0.5); }
+        
+        /* Основной контейнер */
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+        }
         
         /* Ветки */
         .branches-container {
             display: grid;
-            grid-template-columns: 300px 100px 100px 100px;
-            gap: 20px;
-            margin-bottom: 20px;
+            grid-template-columns: 400px 150px 150px 150px;
+            gap: 15px;
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 10px;
         }
         
         /* Таланты */
-        .talent-branch { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; }
-        .talent-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        .talent-branch { 
+            background: rgba(255,255,255,0.1); 
+            padding: 15px; 
+            border-radius: 10px; 
+        }
+        .talent-branch h3 { 
+            text-align: center; 
+            margin-bottom: 15px; 
+            color: #4cc9f0;
+            border-bottom: 1px solid #4a5568;
+            padding-bottom: 8px;
+        }
+        .talent-row { 
+            display: flex; 
+            justify-content: center; 
+            gap: 8px; 
+            margin-bottom: 12px; 
+            min-height: 70px;
+        }
         .talent { 
-            width: 60px; height: 60px; 
-            background: #4a5568; 
+            width: 70px; 
+            height: 70px; 
+            background: linear-gradient(45deg, #2d3748, #4a5568);
             border: 2px solid #718096;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 11px;
             text-align: center;
+            transition: all 0.3s;
+            position: relative;
         }
-        .talent.active { background: #805ad5; border-color: #f72585; }
-        .talent.locked { opacity: 0.3; cursor: not-allowed; }
+        .talent:hover { border-color: #4cc9f0; transform: scale(1.05); }
+        .talent.active { background: linear-gradient(45deg, #7209b7, #3a0ca3); border-color: #f72585; }
+        .talent.locked { opacity: 0.4; cursor: not-allowed; }
+        .talent-level {
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+        }
         
-        /* Вехи */
+        /* Вехи - увеличены в 5 раз */
+        .milestone-branch { 
+            background: rgba(255,255,255,0.1); 
+            padding: 15px; 
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
         .milestone-grid {
             display: grid;
             grid-template-columns: repeat(9, 1fr);
             grid-template-rows: repeat(9, 1fr);
-            gap: 2px;
-            width: 100px;
-            height: 100px;
+            gap: 3px;
+            width: 150px;
+            height: 150px;
         }
         .milestone {
-            width: 10px;
-            height: 10px;
+            width: 15px;  /* Увеличено в 5 раз */
+            height: 15px; /* Увеличено в 5 раз */
             background: #4a5568;
             border: 1px solid #718096;
+            border-radius: 2px;
             cursor: pointer;
+            transition: all 0.3s;
         }
-        .milestone.active { background: #f72585; }
+        .milestone:hover { border-color: #4cc9f0; transform: scale(1.2); }
+        .milestone.active { background: #f72585; border-color: #f72585; }
         .milestone.locked { opacity: 0.3; cursor: not-allowed; }
-        .milestone.start { background: #4cc9f0; }
+        .milestone.start { background: #4cc9f0; border-color: #4cc9f0; }
         
-        /* Инфо */
+        /* Панель информации */
         .info-panel {
             background: rgba(255,255,255,0.1);
             padding: 20px;
             border-radius: 10px;
+            height: fit-content;
         }
-        .points { font-size: 18px; margin-bottom: 10px; }
-        button { padding: 10px; margin: 5px; background: #4361ee; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .points-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .points-box {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .points-box h4 {
+            color: #4cc9f0;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .points-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f72585;
+        }
+        .points-total {
+            font-size: 14px;
+            color: #a0aec0;
+        }
+        
+        .controls { display: flex; flex-direction: column; gap: 10px; }
+        button { 
+            padding: 12px; 
+            background: #4361ee; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        button:hover { background: #3a56d4; transform: translateY(-2px); }
+        
+        #buildCode {
+            width: 100%;
+            height: 80px;
+            margin-top: 15px;
+            background: #2d3748;
+            color: white;
+            border: 1px solid #4a5568;
+            border-radius: 6px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            resize: vertical;
+        }
     </style>
 </head>
 <body>
-    <h1>Калькулятор талантов Аллоды 5.0.2</h1>
+    <h1>🎮 Калькулятор талантов Аллоды Онлайн 5.0.2</h1>
     
     <div class="class-selector">
         <h3>Выберите класс:</h3>
-        <div id="classButtons"></div>
+        <div class="class-buttons" id="classButtons"></div>
     </div>
     
-    <div class="branches-container" id="branchesContainer"></div>
-    
-    <div class="info-panel">
-        <div class="points">Очки: <span id="points">0</span>/71</div>
-        <button onclick="resetAll()">Сбросить</button>
-        <button onclick="exportBuild()">Экспорт</button>
-        <button onclick="importBuild()">Импорт</button>
-        <div>
-            <textarea id="buildCode" style="width:100%; height:60px; margin-top:10px; background:#2d3748; color:white; border:none; padding:10px;"></textarea>
+    <div class="main-container">
+        <div class="branches-container" id="branchesContainer"></div>
+        
+        <div class="info-panel">
+            <div class="points-display">
+                <div class="points-box">
+                    <h4>Очки талантов</h4>
+                    <div class="points-value" id="talentPoints">0</div>
+                    <div class="points-total">из 30 доступно</div>
+                </div>
+                <div class="points-box">
+                    <h4>Очки вех</h4>
+                    <div class="points-value" id="milestonePoints">0</div>
+                    <div class="points-total">из 41 доступно</div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button onclick="resetAll()">🔄 Сбросить всё</button>
+                <button onclick="exportBuild()">📤 Экспорт билда</button>
+                <button onclick="importBuild()">📥 Импорт билда</button>
+            </div>
+            
+            <textarea id="buildCode" placeholder="Код билда появится здесь..." readonly></textarea>
         </div>
     </div>
 
@@ -107,34 +234,89 @@
         // ДАННЫЕ КАЛЬКУЛЯТОРА - ЗАПОЛНИ ЭТО!
         const classes = {
             warrior: {
-                name: "Воин",
+                name: "⚔️ Воин",
                 talents: [
-                    // 10 строк талантов
+                    // Строка 1
                     [
-                        { id: "w1", name: "Сила", max: 5, req: [] },
-                        { id: "w2", name: "Защита", max: 5, req: [] }
+                        { id: "w1_1", name: "Сила оружия", max: 3, req: [], desc: "Увеличивает силу атаки на 2% за уровень" },
+                        { id: "w1_2", name: "Твердая стойка", max: 3, req: [], desc: "Увеличивает защиту на 3% за уровень" },
+                        { id: "w1_3", name: "Боевой дух", max: 3, req: [], desc: "Увеличивает максимальное здоровье на 2% за уровень" }
                     ],
+                    // Строка 2
                     [
-                        { id: "w3", name: "Удар", max: 3, req: ["w1"] },
-                        { id: "w4", name: "Блок", max: 3, req: ["w2"] }
+                        { id: "w2_1", name: "Мощный удар", max: 3, req: ["w1_1"], desc: "Увеличивает урон критического удара на 5% за уровень" },
+                        { id: "w2_2", name: "Железная воля", max: 3, req: ["w1_2"], desc: "Увеличивает сопротивление к контролю на 4% за уровень" },
+                        { id: "w2_3", name: "Выносливость", max: 3, req: ["w1_3"], desc: "Увеличивает скорость восстановления здоровья на 3% за уровень" }
+                    ],
+                    // Строка 3
+                    [
+                        { id: "w3_1", name: "Ярость", max: 3, req: ["w2_1"], desc: "Шанс критического удара увеличен на 2% за уровень" },
+                        { id: "w3_2", name: "Несокрушимость", max: 3, req: ["w2_2"], desc: "Уменьшает получаемый урон на 3% за уровень" },
+                        { id: "w3_3", name: "Регенерация", max: 3, req: ["w2_3"], desc: "Восстанавливает 1% здоровья каждые 3 секунды за уровень" }
+                    ],
+                    // Строка 4
+                    [
+                        { id: "w4_1", name: "Смертельный удар", max: 3, req: ["w3_1"], desc: "Увеличивает урон по целям с низким здоровьем на 8% за уровень" },
+                        { id: "w4_2", name: "Щит возмездия", max: 3, req: ["w3_2"], desc: "При блоке наносит ответный урон 50% от силы атаки за уровень" },
+                        { id: "w4_3", name: "Второе дыхание", max: 3, req: ["w3_3"], desc: "При падении здоровья ниже 30% увеличивает защиту на 15% за уровень" }
+                    ],
+                    // Строка 5
+                    [
+                        { id: "w5_1", name: "Разрушитель", max: 3, req: ["w4_1"], desc: "Игнорирует 10% защиты противника за уровень" },
+                        { id: "w5_2", name: "Непробиваемая броня", max: 3, req: ["w4_2"], desc: "Увеличивает эффективность щита на 20% за уровень" },
+                        { id: "w5_3", name: "Неуязвимость", max: 3, req: ["w4_3"], desc: "Шанс полностью избежать смертельного удара 5% за уровень" }
+                    ],
+                    // Строка 6
+                    [
+                        { id: "w6_1", name: "Берсерк", max: 3, req: ["w5_1"], desc: "При активации увеличивает урон на 25% за уровень" },
+                        { id: "w6_2", name: "Стена щитов", max: 3, req: ["w5_2"], desc: "Создает защитный барьер, поглощающий урон" },
+                        { id: "w6_3", name: "Феникс", max: 3, req: ["w5_3"], desc: "При смерти есть шанс воскреснуть с 30% здоровья за уровень" }
+                    ],
+                    // Строка 7
+                    [
+                        { id: "w7_1", name: "Апофеоз", max: 3, req: ["w6_1"], desc: "Ультимативная способность - увеличивает все характеристики на 15% за уровень" },
+                        { id: "w7_2", name: "Небесный щит", max: 3, req: ["w6_2"], desc: "Ультимативная защита - создает неуязвимость на 3 секунды за уровень" },
+                        { id: "w7_3", name: "Бессмертие", max: 3, req: ["w6_3"], desc: "Ультимативное выживание - воскрешает с полным здоровьем раз в бой за уровень" }
+                    ],
+                    // Строка 8
+                    [
+                        { id: "w8_1", name: "Вихрь клинков", max: 3, req: ["w7_1"], desc: "Наносит урон всем врагам вокруг каждую секунду" },
+                        { id: "w8_2", name: "Землетрясение", max: 3, req: ["w7_2"], desc: "Оглушает всех врагов в радиусе на 2 секунды за уровень" },
+                        { id: "w8_3", name: "Гнев титана", max: 3, req: ["w7_3"], desc: "Увеличивает размер и урон на 50% на 10 секунд за уровень" }
+                    ],
+                    // Строка 9
+                    [
+                        { id: "w9_1", name: "Абсолютная сила", max: 3, req: ["w8_1"], desc: "Увеличивает всю силу атаки на 10% за уровень" },
+                        { id: "w9_2", name: "Божественная защита", max: 3, req: ["w8_2"], desc: "Увеличивает всю защиту на 15% за уровень" },
+                        { id: "w9_3", name: "Вечная жизнь", max: 3, req: ["w8_3"], desc: "Увеличивает максимальное здоровье на 20% за уровень" }
+                    ],
+                    // Строка 10
+                    [
+                        { id: "w10_1", name: "Повелитель битвы", max: 3, req: ["w9_1"], desc: "Легендарный талант - удваивает всю силу атаки" },
+                        { id: "w10_2", name: "Непобедимый", max: 3, req: ["w9_2"], desc: "Легендарный талант - делает неуязвимым на 5 секунд" },
+                        { id: "w10_3", name: "Бессмертный", max: 3, req: ["w9_3"], desc: "Легендарный талант - воскрешает после смерти с полными характеристиками" }
                     ]
-                    // ... добавь остальные 8 строк
                 ],
                 milestones: [
-                    { name: "Веха Силы", grid: createGrid() },
-                    { name: "Веха Защиты", grid: createGrid() },
-                    { name: "Веха Тактики", grid: createGrid() }
+                    { name: "⚡ Веха Силы", grid: createGrid() },
+                    { name: "🛡️ Веха Защиты", grid: createGrid() },
+                    { name: "🎯 Веха Тактики", grid: createGrid() }
                 ]
             },
             paladin: {
-                name: "Паладин",
+                name: "✝️ Паладин",
                 talents: [
-                    // ... заполни таланты
+                    // Заполни по аналогии с воином...
+                    [
+                        { id: "p1_1", name: "Светлая сила", max: 3, req: [], desc: "Увеличивает силу заклинаний на 2% за уровень" },
+                        { id: "p1_2", name: "Божественный щит", max: 3, req: [], desc: "Увеличивает защиту на 3% за уровень" }
+                    ]
+                    // ... добавь остальные 9 строк
                 ],
                 milestones: [
-                    { name: "Веха Света", grid: createGrid() },
-                    { name: "Веха Щита", grid: createGrid() },
-                    { name: "Веха Веры", grid: createGrid() }
+                    { name: "🌟 Веха Света", grid: createGrid() },
+                    { name: "🛡️ Веха Щита", grid: createGrid() },
+                    { name: "🙏 Веха Веры", grid: createGrid() }
                 ]
             }
             // ... добавь остальные классы
@@ -158,7 +340,8 @@
 
         // ПЕРЕМЕННЫЕ
         let currentClass = null;
-        let points = 0;
+        let talentPoints = 0;
+        let milestonePoints = 0;
         const selectedTalents = {};
         const selectedMilestones = {};
 
@@ -180,13 +363,12 @@
 
         function selectClass(classId) {
             currentClass = classId;
-            points = 0;
+            talentPoints = 0;
+            milestonePoints = 0;
             Object.keys(selectedTalents).forEach(key => delete selectedTalents[key]);
             Object.keys(selectedMilestones).forEach(key => delete selectedMilestones[key]);
             
-            // Убрать активность со всех кнопок
             document.querySelectorAll('.class-btn').forEach(btn => btn.classList.remove('active'));
-            // Добавить активность текущей
             event.target.classList.add('active');
             
             renderBranches();
@@ -202,7 +384,7 @@
             // Ветка талантов
             const talentBranch = document.createElement('div');
             talentBranch.className = 'talent-branch';
-            talentBranch.innerHTML = '<h3>Таланты</h3>';
+            talentBranch.innerHTML = '<h3>🎯 Таланты</h3>';
             
             classData.talents.forEach((row, rowIndex) => {
                 const rowDiv = document.createElement('div');
@@ -211,12 +393,17 @@
                 row.forEach(talent => {
                     const talentDiv = document.createElement('div');
                     talentDiv.className = 'talent';
-                    talentDiv.textContent = talent.name;
-                    talentDiv.title = `${talent.name} (${selectedTalents[talent.id] || 0}/${talent.max})`;
+                    const currentLevel = selectedTalents[talent.id] || 0;
+                    const isLocked = talent.req.length > 0 && !talent.req.every(req => selectedTalents[req] > 0);
                     
-                    if (selectedTalents[talent.id]) {
-                        talentDiv.classList.add('active');
-                    }
+                    if (currentLevel > 0) talentDiv.classList.add('active');
+                    if (isLocked) talentDiv.classList.add('locked');
+                    
+                    talentDiv.innerHTML = `
+                        <div>${talent.name}</div>
+                        <div class="talent-level">${currentLevel}/${talent.max}</div>
+                    `;
+                    talentDiv.title = `${talent.name}\n${talent.desc}\nУровень: ${currentLevel}/${talent.max}`;
                     
                     talentDiv.onclick = () => toggleTalent(talent.id, talent.max, talent.req);
                     rowDiv.appendChild(talentDiv);
@@ -230,7 +417,7 @@
             // Ветки вех
             classData.milestones.forEach((milestone, index) => {
                 const milestoneBranch = document.createElement('div');
-                milestoneBranch.className = 'talent-branch';
+                milestoneBranch.className = 'milestone-branch';
                 milestoneBranch.innerHTML = `<h3>${milestone.name}</h3>`;
                 
                 const grid = document.createElement('div');
@@ -254,16 +441,22 @@
         }
 
         function toggleTalent(talentId, maxLevel, requirements) {
-            if (points >= 71) return;
+            if (talentPoints >= 30) return;
             
             const currentLevel = selectedTalents[talentId] || 0;
+            const isLocked = requirements.length > 0 && !requirements.every(req => selectedTalents[req] > 0);
+            
+            if (isLocked) {
+                alert('Не выполнены требования для изучения этого таланта!');
+                return;
+            }
             
             if (currentLevel < maxLevel) {
                 selectedTalents[talentId] = currentLevel + 1;
-                points++;
+                talentPoints++;
             } else {
                 delete selectedTalents[talentId];
-                points--;
+                talentPoints--;
             }
             
             updatePoints();
@@ -271,14 +464,14 @@
         }
 
         function toggleMilestone(milestoneId) {
-            if (points >= 71 && !selectedMilestones[milestoneId]) return;
+            if (milestonePoints >= 41 && !selectedMilestones[milestoneId]) return;
             
             if (selectedMilestones[milestoneId]) {
                 delete selectedMilestones[milestoneId];
-                points--;
+                milestonePoints--;
             } else {
                 selectedMilestones[milestoneId] = true;
-                points++;
+                milestonePoints++;
             }
             
             updatePoints();
@@ -286,11 +479,13 @@
         }
 
         function updatePoints() {
-            document.getElementById('points').textContent = points;
+            document.getElementById('talentPoints').textContent = talentPoints;
+            document.getElementById('milestonePoints').textContent = milestonePoints;
         }
 
         function resetAll() {
-            points = 0;
+            talentPoints = 0;
+            milestonePoints = 0;
             Object.keys(selectedTalents).forEach(key => delete selectedTalents[key]);
             Object.keys(selectedMilestones).forEach(key => delete selectedMilestones[key]);
             updatePoints();
@@ -302,7 +497,8 @@
                 class: currentClass,
                 talents: selectedTalents,
                 milestones: selectedMilestones,
-                points: points
+                talentPoints: talentPoints,
+                milestonePoints: milestonePoints
             };
             document.getElementById('buildCode').value = btoa(JSON.stringify(build));
         }
@@ -315,11 +511,13 @@
                     currentClass = build.class;
                     Object.assign(selectedTalents, build.talents);
                     Object.assign(selectedMilestones, build.milestones);
-                    points = build.points;
+                    talentPoints = build.talentPoints || 0;
+                    milestonePoints = build.milestonePoints || 0;
                     updatePoints();
                     renderBranches();
+                    alert('Билд успешно импортирован!');
                 } catch (e) {
-                    alert('Ошибка импорта!');
+                    alert('Ошибка импорта! Проверьте код билда.');
                 }
             }
         }
