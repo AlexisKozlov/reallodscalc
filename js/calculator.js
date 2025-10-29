@@ -33,11 +33,15 @@ const calculator = {
         this.selectedTalents = {};
         this.selectedMilestones = {};
         
-        // Активируем стартовые вехи
+        // Активируем стартовые вехи (те, у которых req: [])
         if (milestonesData.classes[classId]) {
-            milestonesData.classes[classId].forEach((milestone, index) => {
-                this.selectedMilestones[`${classId}_${index}_4_4`] = true;
-                this.milestonePoints++;
+            milestonesData.classes[classId].forEach((branch) => {
+                branch.milestones.forEach(milestone => {
+                    if (milestone.req.length === 0) {
+                        this.selectedMilestones[milestone.id] = true;
+                        this.milestonePoints++;
+                    }
+                });
             });
         }
         
@@ -119,14 +123,14 @@ const calculator = {
         container.appendChild(talentBranch);
         
         // Ветки вех
-        milestoneData.forEach((milestone, milestoneIndex) => {
-            const milestoneBranch = document.createElement('div');
-            milestoneBranch.className = 'milestone-branch';
-            milestoneBranch.innerHTML = `<h3>${milestone.name}</h3>`;
+        milestoneData.forEach((milestoneBranch, branchIndex) => {
+            const milestoneBranchDiv = document.createElement('div');
+            milestoneBranchDiv.className = 'milestone-branch';
+            milestoneBranchDiv.innerHTML = `<h3>${milestoneBranch.name}</h3>`;
             
-            milestoneBranch.setAttribute('data-tooltip', `${milestone.name}\n\n${milestone.desc}`);
-            milestoneBranch.addEventListener('mouseenter', ui.showTooltip.bind(ui));
-            milestoneBranch.addEventListener('mouseleave', ui.hideTooltip.bind(ui));
+            milestoneBranchDiv.setAttribute('data-tooltip', `${milestoneBranch.name}\n\n${milestoneBranch.desc}`);
+            milestoneBranchDiv.addEventListener('mouseenter', ui.showTooltip.bind(ui));
+            milestoneBranchDiv.addEventListener('mouseleave', ui.hideTooltip.bind(ui));
             
             const grid = document.createElement('div');
             grid.className = 'milestone-grid';
@@ -136,36 +140,55 @@ const calculator = {
                 for (let j = 0; j < 9; j++) {
                     const cellDiv = document.createElement('div');
                     cellDiv.className = 'milestone';
-                    const cellId = `${this.currentClass}_${milestoneIndex}_${i}_${j}`;
-                    const isStart = (i === 4 && j === 4);
-                    const isDisabled = milestone.disabledCells.some(([x, y]) => x === i && y === j);
+                    cellDiv.dataset.position = `${i},${j}`;
                     
-                    if (isDisabled) {
-                        cellDiv.classList.add('disabled');
-                    } else if (isStart) {
-                        cellDiv.classList.add('start');
-                        cellDiv.classList.add('active');
-                    } else if (this.selectedMilestones[cellId]) {
-                        cellDiv.classList.add('active');
+                    // Ищем веху для этой позиции
+                    const milestone = milestoneBranch.milestones.find(m => 
+                        m.position[0] === i && m.position[1] === j
+                    );
+                    
+                    if (milestone) {
+                        const isActive = this.selectedMilestones[milestone.id];
+                        const isAvailable = this.isMilestoneAvailable(milestone.id, milestone.req);
+                        
+                        if (isActive) {
+                            cellDiv.classList.add('active');
+                            cellDiv.innerHTML = milestone.icon || '✓';
+                        } else if (isAvailable) {
+                            cellDiv.classList.add('available');
+                            cellDiv.innerHTML = milestone.icon || '?';
+                        } else {
+                            cellDiv.classList.add('locked');
+                            cellDiv.innerHTML = '🔒';
+                        }
+                        
+                        // Тултип
+                        let tooltip = `${milestone.name}\n\n${milestone.desc}`;
+                        if (!isAvailable && milestone.req.length > 0) {
+                            const reqNames = milestone.req.map(req => this.getMilestoneName(req)).join(', ');
+                            tooltip += `\n\n🔒 Требуется: ${reqNames}`;
+                        }
+                        cellDiv.setAttribute('data-tooltip', tooltip);
+                        
+                        if (isAvailable && !isActive) {
+                            cellDiv.addEventListener('click', () => this.toggleMilestone(milestone.id));
+                        }
+                    } else {
+                        // Пустая клетка (нет вехи)
+                        cellDiv.classList.add('empty');
+                        cellDiv.innerHTML = '·';
+                        cellDiv.setAttribute('data-tooltip', `Пустая клетка [${i},${j}]\n\nЗдесь нет вехи`);
                     }
                     
-                    const isLocked = !isStart && !isDisabled && !this.isMilestoneAvailable(milestoneIndex, i, j);
-                    if (isLocked) cellDiv.classList.add('locked');
-                    
-                    cellDiv.setAttribute('data-tooltip', `Позиция: ${i+1},${j+1}\n\n${isStart ? 'Стартовая точка' : 'Веха'}`);
                     cellDiv.addEventListener('mouseenter', ui.showTooltip.bind(ui));
                     cellDiv.addEventListener('mouseleave', ui.hideTooltip.bind(ui));
-                    
-                    if (!isDisabled && !isLocked) {
-                        cellDiv.addEventListener('click', () => this.toggleMilestone(cellId, i, j));
-                    }
                     
                     grid.appendChild(cellDiv);
                 }
             }
             
-            milestoneBranch.appendChild(grid);
-            container.appendChild(milestoneBranch);
+            milestoneBranchDiv.appendChild(grid);
+            container.appendChild(milestoneBranchDiv);
         });
     },
 
@@ -189,17 +212,15 @@ const calculator = {
         return pointsInPreviousRows >= rowData.requiredPoints;
     },
 
-    isMilestoneAvailable(milestoneIndex, row, col) {
-        if (row === 4 && col === 4) return true;
+    isMilestoneAvailable(milestoneId, requirements) {
+        // Если веха уже активна, она доступна для отображения
+        if (this.selectedMilestones[milestoneId]) return true;
         
-        const neighbors = [
-            [row-1, col], [row+1, col], [row, col-1], [row, col+1]
-        ];
+        // Стартовые вехи (без требований) всегда доступны
+        if (requirements.length === 0) return true;
         
-        return neighbors.some(([r, c]) => {
-            return r >= 0 && r < 9 && c >= 0 && c < 9 && 
-                   this.selectedMilestones[`${this.currentClass}_${milestoneIndex}_${r}_${c}`];
-        });
+        // Проверяем требования
+        return requirements.every(reqId => this.selectedMilestones[reqId]);
     },
 
     toggleTalent(talentId, maxLevel, requirements, rowIndex) {
@@ -237,7 +258,7 @@ const calculator = {
         this.updateBuildCode();
     },
 
-    toggleMilestone(milestoneId, row, col) {
+    toggleMilestone(milestoneId) {
         if (this.milestonePoints >= milestonesData.settings.maxMilestonePoints && !this.selectedMilestones[milestoneId]) {
             alert(`Достигнут лимит очков вех: ${milestonesData.settings.maxMilestonePoints}`);
             return;
@@ -249,18 +270,13 @@ const calculator = {
                 delete this.selectedMilestones[milestoneId];
                 this.milestonePoints--;
             } else {
-                alert('Нельзя удалить эту веху! Есть зависимые вехи.');
+                alert('Нельзя удалить веху! Есть зависимые вехи.');
                 return;
             }
         } else {
-            // Проверяем доступность новой вехи
-            if (this.isMilestoneAvailable(parseInt(milestoneId.split('_')[1]), row, col)) {
-                this.selectedMilestones[milestoneId] = true;
-                this.milestonePoints++;
-            } else {
-                alert('Веха должна быть соединена с уже выбранными вехами!');
-                return;
-            }
+            // Добавляем веху
+            this.selectedMilestones[milestoneId] = true;
+            this.milestonePoints++;
         }
 
         ui.updatePoints();
@@ -269,56 +285,33 @@ const calculator = {
     },
 
     canRemoveMilestone(milestoneId) {
-        const [classId, branchIndex, row, col] = milestoneId.split('_');
+        // Собираем все вехи текущего класса
+        const allMilestones = [];
+        if (milestonesData.classes[this.currentClass]) {
+            milestonesData.classes[this.currentClass].forEach(branch => {
+                allMilestones.push(...branch.milestones);
+            });
+        }
         
-        // Стартовую веху нельзя удалить
-        if (row === '4' && col === '4') {
-            return false;
-        }
-
-        // Проверяем, нет ли вех, которые зависят от этой
-        const selected = Object.keys(this.selectedMilestones);
-        const neighbors = [
-            [parseInt(row)-1, parseInt(col)], 
-            [parseInt(row)+1, parseInt(col)], 
-            [parseInt(row), parseInt(col)-1], 
-            [parseInt(row), parseInt(col)+1]
-        ];
-
-        for (const [r, c] of neighbors) {
-            if (r >= 0 && r < 9 && c >= 0 && c < 9) {
-                const neighborId = `${classId}_${branchIndex}_${r}_${c}`;
-                if (this.selectedMilestones[neighborId] && !this.hasAlternativeConnection(neighborId, milestoneId)) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
+        // Ищем вехи, которые требуют эту веху
+        const dependentMilestones = allMilestones.filter(m => 
+            m.req.includes(milestoneId) && this.selectedMilestones[m.id]
+        );
+        
+        return dependentMilestones.length === 0;
     },
 
-    hasAlternativeConnection(milestoneId, excludedId) {
-        const [classId, branchIndex, row, col] = milestoneId.split('_');
-        const excludedCoords = excludedId.split('_').slice(2);
-        
-        const neighbors = [
-            [parseInt(row)-1, parseInt(col)], 
-            [parseInt(row)+1, parseInt(col)], 
-            [parseInt(row), parseInt(col)-1], 
-            [parseInt(row), parseInt(col)+1]
-        ];
-
-        for (const [r, c] of neighbors) {
-            if (r >= 0 && r < 9 && c >= 0 && c < 9) {
-                const neighborId = `${classId}_${branchIndex}_${r}_${c}`;
-                if (this.selectedMilestones[neighborId] && 
-                    !(r == excludedCoords[0] && c == excludedCoords[1])) {
-                    return true;
-                }
-            }
+    getMilestoneName(milestoneId) {
+        // Собираем все вехи текущего класса
+        const allMilestones = [];
+        if (milestonesData.classes[this.currentClass]) {
+            milestonesData.classes[this.currentClass].forEach(branch => {
+                allMilestones.push(...branch.milestones);
+            });
         }
-
-        return false;
+        
+        const milestone = allMilestones.find(m => m.id === milestoneId);
+        return milestone ? milestone.name : milestoneId;
     },
 
     // Сброс всех выбранных талантов и вех
@@ -331,9 +324,13 @@ const calculator = {
             
             // Восстанавливаем стартовые вехи
             if (this.currentClass && milestonesData.classes[this.currentClass]) {
-                milestonesData.classes[this.currentClass].forEach((milestone, index) => {
-                    this.selectedMilestones[`${this.currentClass}_${index}_4_4`] = true;
-                    this.milestonePoints++;
+                milestonesData.classes[this.currentClass].forEach((branch) => {
+                    branch.milestones.forEach(milestone => {
+                        if (milestone.req.length === 0) {
+                            this.selectedMilestones[milestone.id] = true;
+                            this.milestonePoints++;
+                        }
+                    });
                 });
             }
             
@@ -424,7 +421,8 @@ const calculator = {
             talents: this.selectedTalents,
             milestones: Object.keys(this.selectedMilestones).filter(id => id.startsWith(this.currentClass)),
             talentPoints: this.talentPoints,
-            milestonePoints: this.milestonePoints
+            milestonePoints: this.milestonePoints,
+            stats: this.getBuildStats()
         };
 
         document.getElementById('buildCode').value = JSON.stringify(buildData, null, 2);
@@ -471,6 +469,16 @@ const calculator = {
             }
         }
 
+        // Проверяем требования вех
+        for (const milestoneId of Object.keys(this.selectedMilestones)) {
+            if (!this.areMilestoneRequirementsMet(milestoneId)) {
+                const milestone = this.findMilestoneById(milestoneId);
+                if (milestone) {
+                    errors.push(`Не выполнены требования для вехи "${milestone.name}"`);
+                }
+            }
+        }
+
         return {
             isValid: errors.length === 0,
             errors: errors,
@@ -492,10 +500,30 @@ const calculator = {
         return null;
     },
 
+    findMilestoneById(milestoneId) {
+        if (!this.currentClass || !milestonesData.classes[this.currentClass]) return null;
+        
+        for (const branch of milestonesData.classes[this.currentClass]) {
+            for (const milestone of branch.milestones) {
+                if (milestone.id === milestoneId) {
+                    return milestone;
+                }
+            }
+        }
+        return null;
+    },
+
     areTalentRequirementsMet(talentId) {
         const talent = this.findTalentById(talentId);
         if (!talent || !talent.req) return true;
         
         return talent.req.every(reqId => this.selectedTalents[reqId] > 0);
+    },
+
+    areMilestoneRequirementsMet(milestoneId) {
+        const milestone = this.findMilestoneById(milestoneId);
+        if (!milestone || !milestone.req) return true;
+        
+        return milestone.req.every(reqId => this.selectedMilestones[reqId]);
     }
 };
