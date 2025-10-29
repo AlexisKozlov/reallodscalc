@@ -3,267 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Редактируемый Калькулятор Талантов</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: Arial, sans-serif; 
-            background: #1a1a2e; 
-            color: white; 
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        /* Режимы */
-        .mode-selector {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .mode-btn {
-            padding: 10px 20px;
-            background: #4361ee;
-            border: none;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .mode-btn.active {
-            background: #f72585;
-        }
-        
-        /* Режим калькулятора */
-        .calculator-mode {
-            display: block;
-        }
-        .editor-mode {
-            display: none;
-        }
-        
-        /* Классы */
-        .class-selector {
-            background: rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        .class-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .class-btn {
-            padding: 12px 20px;
-            background: #4361ee;
-            border: none;
-            color: white;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        .class-btn.active {
-            background: #f72585;
-        }
-        
-        /* Ветки */
-        .branches-container {
-            display: grid;
-            grid-template-columns: 400px 200px 200px 200px;
-            gap: 20px;
-            background: rgba(255,255,255,0.05);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        
-        /* Таланты */
-        .talent-branch {
-            background: rgba(255,255,255,0.1);
-            padding: 15px;
-            border-radius: 10px;
-        }
-        .talent-branch h3 {
-            text-align: center;
-            margin-bottom: 15px;
-            color: #4cc9f0;
-            border-bottom: 1px solid #4a5568;
-            padding-bottom: 8px;
-        }
-        .talent-row {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            min-height: 80px;
-        }
-        .talent {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(45deg, #2d3748, #4a5568);
-            border: 2px solid #718096;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            text-align: center;
-            position: relative;
-            padding: 5px;
-        }
-        .talent.active {
-            background: linear-gradient(45deg, #7209b7, #3a0ca3);
-            border-color: #f72585;
-        }
-        .talent.locked {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-        .talent-level {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-size: 10px;
-        }
-        
-        /* Вехи */
-        .milestone-branch {
-            background: rgba(255,255,255,0.1);
-            padding: 15px;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .milestone-grid {
-            display: grid;
-            grid-template-columns: repeat(9, 1fr);
-            grid-template-rows: repeat(9, 1fr);
-            gap: 4px;
-            width: 180px;
-            height: 180px;
-        }
-        .milestone {
-            width: 18px;
-            height: 18px;
-            background: #4a5568;
-            border: 2px solid #718096;
-            border-radius: 4px;
-            cursor: pointer;
-            position: relative;
-        }
-        .milestone.active {
-            background: #f72585;
-            border-color: #f72585;
-        }
-        .milestone.locked {
-            opacity: 0.2;
-            cursor: not-allowed;
-            background: #2d3748;
-        }
-        .milestone.start {
-            background: #4cc9f0;
-            border-color: #4cc9f0;
-        }
-        .milestone.disabled {
-            opacity: 0.1;
-            cursor: not-allowed;
-            background: transparent;
-            border: 2px dotted #718096;
-        }
-        
-        /* Панель информации */
-        .info-panel {
-            background: rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 10px;
-        }
-        .points-display {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .points-box {
-            background: rgba(255,255,255,0.1);
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-        }
-        .points-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #f72585;
-        }
-        
-        /* Редактор */
-        .editor-container {
-            background: rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        .json-editor {
-            width: 100%;
-            height: 400px;
-            background: #2d3748;
-            color: white;
-            border: 1px solid #4a5568;
-            border-radius: 5px;
-            padding: 15px;
-            font-family: monospace;
-            font-size: 12px;
-            resize: vertical;
-        }
-        .editor-controls {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .editor-btn {
-            padding: 10px 20px;
-            background: #4361ee;
-            border: none;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        
-        /* Тултипы */
-        .tooltip {
-            position: absolute;
-            background: rgba(0,0,0,0.9);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            white-space: pre-line;
-            z-index: 1000;
-            max-width: 300px;
-            border: 1px solid #4cc9f0;
-            pointer-events: none;
-        }
-    </style>
+    <title>Калькулятор талантов Аллодов</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="container">
-        <h1>🎮 Редактируемый Калькулятор Талантов</h1>
+        <h1>🎮 Калькулятор талантов Аллодов</h1>
         
         <div class="mode-selector">
-            <button class="mode-btn active" onclick="switchMode('calculator')">🧮 Калькулятор</button>
-            <button class="mode-btn" onclick="switchMode('editor')">⚙️ Редактор</button>
+            <button class="mode-btn active" data-mode="calculator">🧮 Калькулятор</button>
+            <button class="mode-btn" data-mode="editor">⚙️ Редактор данных</button>
         </div>
         
         <!-- Режим калькулятора -->
-        <div class="calculator-mode" id="calculatorMode">
+        <div class="mode-content active" id="calculatorMode">
             <div class="class-selector">
                 <h3>Выберите класс:</h3>
                 <div class="class-buttons" id="classButtons"></div>
@@ -276,482 +29,97 @@
                     <div class="points-box">
                         <h4>Очки талантов</h4>
                         <div class="points-value" id="talentPoints">0</div>
-                        <div>из <span id="maxTalentPoints">30</span> доступно</div>
+                        <div>из <span id="maxTalentPoints">0</span> доступно</div>
                     </div>
                     <div class="points-box">
                         <h4>Очки вех</h4>
                         <div class="points-value" id="milestonePoints">0</div>
-                        <div>из <span id="maxMilestonePoints">41</span> доступно</div>
+                        <div>из <span id="maxMilestonePoints">0</span> доступно</div>
                     </div>
                 </div>
                 
                 <div class="controls">
-                    <button onclick="resetAll()">🔄 Сбросить всё</button>
-                    <button onclick="exportBuild()">📤 Экспорт билда</button>
-                    <button onclick="importBuild()">📥 Импорт билда</button>
+                    <button onclick="calculator.resetAll()">🔄 Сбросить всё</button>
+                    <button onclick="calculator.exportBuild()">📤 Экспорт билда</button>
+                    <button onclick="calculator.importBuild()">📥 Импорт билда</button>
                 </div>
                 
-                <textarea id="buildCode" placeholder="Код билда появится здесь..." readonly style="width:100%; height:60px; margin-top:15px; background:#2d3748; color:white; border:none; padding:10px;"></textarea>
+                <textarea id="buildCode" placeholder="Код билда появится здесь..." readonly></textarea>
             </div>
         </div>
         
         <!-- Режим редактора -->
-        <div class="editor-mode" id="editorMode">
+        <div class="mode-content" id="editorMode">
             <div class="editor-container">
-                <h3>Редактор данных:</h3>
-                <textarea class="json-editor" id="jsonEditor"></textarea>
-                <div class="editor-controls">
-                    <button class="editor-btn" onclick="loadData()">🔄 Загрузить данные</button>
-                    <button class="editor-btn" onclick="saveData()">💾 Сохранить изменения</button>
-                    <button class="editor-btn" onclick="resetData()">🔄 Сбросить к исходным</button>
+                <h3>📝 Редактор данных калькулятора</h3>
+                
+                <div class="editor-tabs">
+                    <button class="editor-tab active" data-tab="classes">🎯 Классы и таланты</button>
+                    <button class="editor-tab" data-tab="milestones">🔷 Вехи</button>
+                    <button class="editor-tab" data-tab="settings">⚙️ Настройки</button>
                 </div>
-            </div>
-            
-            <div class="info-panel">
-                <h3>Инструкция по редактированию:</h3>
-                <p><strong>Таланты:</strong> Меняйте name, desc, max, req (требования), icon</p>
-                <p><strong>Вехи:</strong> Меняйте name, desc, disabledCells (координаты заблокированных ячеек)</p>
-                <p><strong>Настройки:</strong> Меняйте maxTalentPoints и maxMilestonePoints</p>
-                <p><strong>Координаты:</strong> [0,0] - левый верхний угол, [4,4] - центр</p>
+                
+                <div class="tab-content active" id="classesTab">
+                    <div class="editor-help">
+                        <h4>Как редактировать классы:</h4>
+                        <p><strong>name</strong> - название класса</p>
+                        <p><strong>talents</strong> - массив талантов (каждый массив = строка в калькуляторе)</p>
+                        <p><strong>id</strong> - уникальный ID таланта</p>
+                        <p><strong>name</strong> - название таланта</p>
+                        <p><strong>desc</strong> - описание для каждого ранга [ранг1, ранг2, ранг3]</p>
+                        <p><strong>max</strong> - максимальный уровень (обычно 3)</p>
+                        <p><strong>req</strong> - требования [id_требуемого_таланта]</p>
+                        <p><strong>icon</strong> - иконка (эмодзи)</p>
+                    </div>
+                    <textarea class="json-editor" id="classesEditor"></textarea>
+                </div>
+                
+                <div class="tab-content" id="milestonesTab">
+                    <div class="editor-help">
+                        <h4>Как редактировать вехи:</h4>
+                        <p><strong>name</strong> - название ветки вех</p>
+                        <p><strong>desc</strong> - описание ветки</p>
+                        <p><strong>disabledCells</strong> - координаты заблокированных ячеек [[x1,y1], [x2,y2]]</p>
+                        <p><strong>Координаты:</strong> [0,0] - левый верхний угол, [4,4] - центр</p>
+                    </div>
+                    <textarea class="json-editor" id="milestonesEditor"></textarea>
+                </div>
+                
+                <div class="tab-content" id="settingsTab">
+                    <div class="editor-help">
+                        <h4>Настройки калькулятора:</h4>
+                        <p><strong>maxTalentPoints</strong> - максимальное количество очков талантов</p>
+                        <p><strong>maxMilestonePoints</strong> - максимальное количество очков вех</p>
+                    </div>
+                    <textarea class="json-editor" id="settingsEditor"></textarea>
+                </div>
+                
+                <div class="editor-controls">
+                    <button class="editor-btn" onclick="editor.saveAll()">💾 Сохранить все изменения</button>
+                    <button class="editor-btn" onclick="editor.loadAll()">🔄 Загрузить из файлов</button>
+                    <button class="editor-btn" onclick="editor.resetToDefault()">🔄 Сбросить к исходным</button>
+                    <button class="editor-btn" onclick="switchMode('calculator')">👀 Предпросмотр</button>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Загружаем данные -->
+    <script src="data/classes.js"></script>
+    <script src="data/milestones.js"></script>
+    
+    <!-- Загружаем скрипты -->
+    <script src="js/calculator.js"></script>
+    <script src="js/editor.js"></script>
+    <script src="js/ui.js"></script>
+    
+    <!-- Инициализация -->
     <script>
-        // БАЗОВЫЕ ДАННЫЕ (можно редактировать)
-        let gameData = {
-            settings: {
-                maxTalentPoints: 30,
-                maxMilestonePoints: 41
-            },
-            classes: {
-                warrior: {
-                    name: "⚔️ Воин",
-                    talents: [
-                        [
-                            {
-                                id: "war_tal_1",
-                                name: "Сила оружия",
-                                desc: ["+2% к силе атаки", "+4% к силе атаки", "+6% к силе атаки"],
-                                max: 3,
-                                req: [],
-                                icon: "⚔️"
-                            },
-                            {
-                                id: "war_tal_2",
-                                name: "Твердая стойка", 
-                                desc: ["+3% к защите", "+6% к защите", "+9% к защите"],
-                                max: 3,
-                                req: [],
-                                icon: "🛡️"
-                            }
-                        ],
-                        [
-                            {
-                                id: "war_tal_3",
-                                name: "Мощный удар",
-                                desc: ["+5% к урону крита", "+10% к урону крита", "+15% к урону крита"],
-                                max: 3,
-                                req: ["war_tal_1"],
-                                icon: "💥"
-                            }
-                        ]
-                    ],
-                    milestones: [
-                        {
-                            name: "⚡ Веха Силы",
-                            desc: "Увеличивает боевую эффективность",
-                            disabledCells: [[0,0], [0,8], [8,0], [8,8]]
-                        },
-                        {
-                            name: "🛡️ Веха Защиты", 
-                            desc: "Повышает выживаемость",
-                            disabledCells: [[1,1], [1,7], [7,1], [7,7]]
-                        },
-                        {
-                            name: "🎯 Веха Тактики",
-                            desc: "Улучшает тактические возможности", 
-                            disabledCells: [[0,4], [4,0], [4,8], [8,4]]
-                        }
-                    ]
-                },
-                mage: {
-                    name: "🔮 Маг",
-                    talents: [
-                        [
-                            {
-                                id: "mag_tal_1",
-                                name: "Магическая мощь",
-                                desc: ["+3% к силе заклинаний", "+6% к силе заклинаний", "+9% к силе заклинаний"],
-                                max: 3,
-                                req: [],
-                                icon: "🔮"
-                            }
-                        ]
-                    ],
-                    milestones: [
-                        {
-                            name: "🔥 Веха Огня",
-                            desc: "Усиливает огненные заклинания",
-                            disabledCells: [[2,2], [2,6], [6,2], [6,6]]
-                        },
-                        {
-                            name: "❄️ Веха Льда",
-                            desc: "Улучшает ледяные заклинания",
-                            disabledCells: [[3,3], [3,5], [5,3], [5,5]]
-                        }
-                    ]
-                }
-            }
-        };
-
-        // ПЕРЕМЕННЫЕ
-        let currentClass = null;
-        let talentPoints = 0;
-        let milestonePoints = 0;
-        const selectedTalents = {};
-        const selectedMilestones = {};
-        let currentTooltip = null;
-
-        // ИНИЦИАЛИЗАЦИЯ
-        function init() {
-            loadData();
-            createClassButtons();
-            updateMaxPoints();
-        }
-
-        // РЕЖИМЫ
-        function switchMode(mode) {
-            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('calculatorMode').style.display = 'none';
-            document.getElementById('editorMode').style.display = 'none';
-            
-            if (mode === 'calculator') {
-                document.querySelector('.mode-btn:nth-child(1)').classList.add('active');
-                document.getElementById('calculatorMode').style.display = 'block';
-                renderBranches();
-            } else {
-                document.querySelector('.mode-btn:nth-child(2)').classList.add('active');
-                document.getElementById('editorMode').style.display = 'block';
-                updateEditor();
-            }
-        }
-
-        // РЕДАКТОР
-        function updateEditor() {
-            document.getElementById('jsonEditor').value = JSON.stringify(gameData, null, 2);
-        }
-
-        function loadData() {
-            try {
-                const newData = JSON.parse(document.getElementById('jsonEditor').value);
-                gameData = newData;
-                updateMaxPoints();
-                createClassButtons();
-                if (currentClass) renderBranches();
-                alert('Данные успешно загружены!');
-            } catch (e) {
-                alert('Ошибка в формате JSON!');
-            }
-        }
-
-        function saveData() {
-            updateEditor();
-            alert('Изменения сохранены (в текущей сессии)');
-        }
-
-        function resetData() {
-            gameData = {
-                settings: { maxTalentPoints: 30, maxMilestonePoints: 41 },
-                classes: {
-                    warrior: {
-                        name: "⚔️ Воин",
-                        talents: [[
-                            { id: "war_tal_1", name: "Сила оружия", desc: ["Ранг 1", "Ранг 2", "Ранг 3"], max: 3, req: [], icon: "⚔️" }
-                        ]],
-                        milestones: [
-                            { name: "Веха 1", desc: "Описание вехи", disabledCells: [] }
-                        ]
-                    }
-                }
-            };
-            updateEditor();
-        }
-
-        function updateMaxPoints() {
-            document.getElementById('maxTalentPoints').textContent = gameData.settings.maxTalentPoints;
-            document.getElementById('maxMilestonePoints').textContent = gameData.settings.maxMilestonePoints;
-        }
-
-        // ОСНОВНАЯ ЛОГИКА
-        function createClassButtons() {
-            const container = document.getElementById('classButtons');
-            container.innerHTML = '';
-            
-            for (const classId in gameData.classes) {
-                const btn = document.createElement('button');
-                btn.className = 'class-btn';
-                btn.textContent = gameData.classes[classId].name;
-                btn.onclick = () => selectClass(classId);
-                container.appendChild(btn);
-            }
-        }
-
-        function selectClass(classId) {
-            currentClass = classId;
-            talentPoints = 0;
-            milestonePoints = 0;
-            
-            // Очищаем выбранные таланты и вехи
-            Object.keys(selectedTalents).forEach(key => delete selectedTalents[key]);
-            Object.keys(selectedMilestones).forEach(key => delete selectedMilestones[key]);
-            
-            // Активируем стартовые вехи
-            gameData.classes[classId].milestones.forEach((milestone, index) => {
-                selectedMilestones[`${classId}_milestone_${index}_4_4`] = true;
-                milestonePoints++;
-            });
-            
-            document.querySelectorAll('.class-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            renderBranches();
-            updatePoints();
-        }
-
-        function renderBranches() {
-            const container = document.getElementById('branchesContainer');
-            container.innerHTML = '';
-            
-            const classData = gameData.classes[currentClass];
-            
-            // Ветка талантов
-            const talentBranch = document.createElement('div');
-            talentBranch.className = 'talent-branch';
-            talentBranch.innerHTML = '<h3>🎯 Таланты</h3>';
-            
-            classData.talents.forEach((row, rowIndex) => {
-                const rowDiv = document.createElement('div');
-                rowDiv.className = 'talent-row';
-                
-                row.forEach(talent => {
-                    const talentDiv = document.createElement('div');
-                    talentDiv.className = 'talent';
-                    const currentLevel = selectedTalents[talent.id] || 0;
-                    const isLocked = talent.req.length > 0 && !talent.req.every(req => selectedTalents[req] > 0);
-                    
-                    if (currentLevel > 0) talentDiv.classList.add('active');
-                    if (isLocked) talentDiv.classList.add('locked');
-                    
-                    talentDiv.innerHTML = `
-                        <div style="font-size: 16px; margin-bottom: 5px;">${talent.icon || '❓'}</div>
-                        <div style="font-size: 9px; line-height: 1.1;">${talent.name}</div>
-                        <div class="talent-level">${currentLevel}/${talent.max}</div>
-                    `;
-                    
-                    // Тултип
-                    const desc = talent.desc[Math.min(currentLevel, talent.desc.length - 1)];
-                    talentDiv.setAttribute('data-tooltip', `${talent.name}\n\n${desc}\n\nУровень: ${currentLevel}/${talent.max}`);
-                    
-                    talentDiv.addEventListener('mouseenter', showTooltip);
-                    talentDiv.addEventListener('mouseleave', hideTooltip);
-                    talentDiv.addEventListener('click', () => toggleTalent(talent.id, talent.max, talent.req));
-                    
-                    rowDiv.appendChild(talentDiv);
-                });
-                
-                talentBranch.appendChild(rowDiv);
-            });
-            
-            container.appendChild(talentBranch);
-            
-            // Ветки вех
-            classData.milestones.forEach((milestone, milestoneIndex) => {
-                const milestoneBranch = document.createElement('div');
-                milestoneBranch.className = 'milestone-branch';
-                milestoneBranch.innerHTML = `<h3>${milestone.name}</h3>`;
-                
-                milestoneBranch.setAttribute('data-tooltip', `${milestone.name}\n\n${milestone.desc}`);
-                milestoneBranch.addEventListener('mouseenter', showTooltip);
-                milestoneBranch.addEventListener('mouseleave', hideTooltip);
-                
-                const grid = document.createElement('div');
-                grid.className = 'milestone-grid';
-                
-                // Создаем сетку 9x9
-                for (let i = 0; i < 9; i++) {
-                    for (let j = 0; j < 9; j++) {
-                        const cellDiv = document.createElement('div');
-                        cellDiv.className = 'milestone';
-                        const cellId = `${currentClass}_milestone_${milestoneIndex}_${i}_${j}`;
-                        const isStart = (i === 4 && j === 4);
-                        const isDisabled = milestone.disabledCells.some(([x, y]) => x === i && y === j);
-                        
-                        if (isDisabled) {
-                            cellDiv.classList.add('disabled');
-                        } else if (isStart) {
-                            cellDiv.classList.add('start');
-                            cellDiv.classList.add('active');
-                        } else if (selectedMilestones[cellId]) {
-                            cellDiv.classList.add('active');
-                        }
-                        
-                        const isLocked = !isStart && !isDisabled && !isMilestoneAvailable(currentClass, milestoneIndex, i, j);
-                        if (isLocked) cellDiv.classList.add('locked');
-                        
-                        cellDiv.setAttribute('data-tooltip', `Позиция: ${i+1},${j+1}\n\n${isStart ? 'Стартовая точка' : 'Веха'}`);
-                        cellDiv.addEventListener('mouseenter', showTooltip);
-                        cellDiv.addEventListener('mouseleave', hideTooltip);
-                        
-                        if (!isDisabled && !isLocked) {
-                            cellDiv.addEventListener('click', () => toggleMilestone(cellId, i, j));
-                        }
-                        
-                        grid.appendChild(cellDiv);
-                    }
-                }
-                
-                milestoneBranch.appendChild(grid);
-                container.appendChild(milestoneBranch);
-            });
-        }
-
-        function isMilestoneAvailable(classId, milestoneIndex, row, col) {
-            if (row === 4 && col === 4) return true; // Стартовая клетка
-            
-            const neighbors = [
-                [row-1, col], [row+1, col], [row, col-1], [row, col+1]
-            ];
-            
-            return neighbors.some(([r, c]) => {
-                return r >= 0 && r < 9 && c >= 0 && c < 9 && 
-                       selectedMilestones[`${classId}_milestone_${milestoneIndex}_${r}_${c}`];
-            });
-        }
-
-        function toggleTalent(talentId, maxLevel, requirements) {
-            if (talentPoints >= gameData.settings.maxTalentPoints) return;
-            
-            const currentLevel = selectedTalents[talentId] || 0;
-            const isLocked = requirements.length > 0 && !requirements.every(req => selectedTalents[req] > 0);
-            
-            if (isLocked) {
-                alert('Не выполнены требования для изучения этого таланта!');
-                return;
-            }
-            
-            if (currentLevel < maxLevel) {
-                selectedTalents[talentId] = currentLevel + 1;
-                talentPoints++;
-            } else {
-                delete selectedTalents[talentId];
-                talentPoints--;
-            }
-            
-            updatePoints();
-            renderBranches();
-        }
-
-        function toggleMilestone(milestoneId, row, col) {
-            if (milestonePoints >= gameData.settings.maxMilestonePoints && !selectedMilestones[milestoneId]) return;
-            
-            if (selectedMilestones[milestoneId]) {
-                delete selectedMilestones[milestoneId];
-                milestonePoints--;
-            } else {
-                selectedMilestones[milestoneId] = true;
-                milestonePoints++;
-            }
-            
-            updatePoints();
-            renderBranches();
-        }
-
-        function updatePoints() {
-            document.getElementById('talentPoints').textContent = talentPoints;
-            document.getElementById('milestonePoints').textContent = milestonePoints;
-        }
-
-        function resetAll() {
-            talentPoints = 0;
-            milestonePoints = 0;
-            Object.keys(selectedTalents).forEach(key => delete selectedTalents[key]);
-            Object.keys(selectedMilestones).forEach(key => delete selectedMilestones[key]);
-            
-            // Активируем стартовые вехи заново
-            if (currentClass) {
-                gameData.classes[currentClass].milestones.forEach((milestone, index) => {
-                    selectedMilestones[`${currentClass}_milestone_${index}_4_4`] = true;
-                    milestonePoints++;
-                });
-            }
-            
-            updatePoints();
-            renderBranches();
-        }
-
-        function exportBuild() {
-            const build = {
-                class: currentClass,
-                talents: selectedTalents,
-                milestones: selectedMilestones,
-                talentPoints: talentPoints,
-                milestonePoints: milestonePoints
-            };
-            document.getElementById('buildCode').value = btoa(JSON.stringify(build));
-        }
-
-        function importBuild() {
-            const code = prompt('Введите код билда:');
-            if (code) {
-                try {
-                    const build = JSON.parse(atob(code));
-                    currentClass = build.class;
-                    Object.assign(selectedTalents, build.talents);
-                    Object.assign(selectedMilestones, build.milestones);
-                    talentPoints = build.talentPoints || 0;
-                    milestonePoints = build.milestonePoints || 0;
-                    
-                    document.querySelectorAll('.class-btn').forEach(btn => {
-                        btn.classList.remove('active');
-                        if (btn.textContent === gameData.classes[currentClass].name) {
-                            btn.classList.add('active');
-                        }
-                    });
-                    
-                    updatePoints();
-                    renderBranches();
-                    alert('Билд успешно импортирован!');
-                } catch (e) {
-                    alert('Ошибка импорта!');
-                }
-            }
-        }
-
-        // ТУЛТИПЫ
-        function showTooltip(event) {
-            hideTooltip();
-            const tooltip = document.createElement('div');
-            tooltip.className = 'tooltip';
-            tooltip.textContent = event.target.getAttribute('data-tooltip');
-            document.body.appendChild(tooltip);
-            
-            const rect = event.target.getBoundingClientRect();
-            tooltip.style.left = (rect.left + window.scrollX) + 'px';
-            tooltip.style.top = (rect.top + window.scrollY - tooltip.offsetHeight - 10) + 'px';
-            
-            currentTooltip = tooltip;
-        }
-
-        function hideTooltip() {
-            if (currentTooltip) {
-                currentTooltip.remove();
-                currentTooltip = null;
-            }
-        }
-
-        // ЗАПУСК
-        window.addEventListener('load', init);
+        document.addEventListener('DOMContentLoaded', function() {
+            ui.init();
+            calculator.init();
+            editor.init();
+        });
     </script>
 </body>
 </html>
