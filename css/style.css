@@ -420,3 +420,35 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* Стили для редактора вех */
+.milestone-editor-cell {
+    width: 40px;
+    height: 40px;
+    background: #4a5568;
+    border: 2px solid #718096;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.milestone-editor-cell:hover {
+    transform: scale(1.1);
+    border-color: #4cc9f0;
+}
+
+.milestone-editor-cell.disabled {
+    background: #2d3748;
+    opacity: 0.4;
+}
+
+.milestone-editor-cell.start {
+    background: #4cc9f0;
+    border-color: #4cc9f0;
+    cursor: not-allowed;
+}
