@@ -49,6 +49,7 @@ const calculator = {
         
         this.renderBranches();
         ui.updatePoints();
+        this.updateBuildCode();
     },
 
     renderBranches() {
@@ -65,18 +66,23 @@ const calculator = {
         talentBranch.className = 'talent-branch';
         talentBranch.innerHTML = '<h3>🎯 Таланты</h3>';
         
-        classData.talents.forEach((row, rowIndex) => {
+        classData.talents.forEach((rowData, rowIndex) => {
             const rowDiv = document.createElement('div');
             rowDiv.className = 'talent-row';
             
-            row.forEach(talent => {
+            rowData.talents.forEach(talent => {
                 const talentDiv = document.createElement('div');
                 talentDiv.className = 'talent';
                 const currentLevel = this.selectedTalents[talent.id] || 0;
-                const isLocked = talent.req.length > 0 && !talent.req.every(req => this.selectedTalents[req] > 0);
+                
+                // Проверяем доступность строки
+                const isRowLocked = !this.isRowAvailable(rowIndex);
+                
+                // Проверяем требования таланта
+                const isTalentLocked = talent.req.length > 0 && !talent.req.every(req => this.selectedTalents[req] > 0);
                 
                 if (currentLevel > 0) talentDiv.classList.add('active');
-                if (isLocked) talentDiv.classList.add('locked');
+                if (isRowLocked || isTalentLocked) talentDiv.classList.add('locked');
                 
                 talentDiv.innerHTML = `
                     <div style="font-size: 16px; margin-bottom: 5px;">${talent.icon || '❓'}</div>
@@ -86,11 +92,23 @@ const calculator = {
                 
                 // Тултип
                 const desc = talent.desc[Math.min(currentLevel, talent.desc.length - 1)];
-                talentDiv.setAttribute('data-tooltip', `${talent.name}\n\n${desc}\n\nУровень: ${currentLevel}/${talent.max}`);
+                let tooltipText = `${talent.name}\n\n${desc}\n\nУровень: ${currentLevel}/${talent.max}`;
+                
+                if (isRowLocked) {
+                    tooltipText += `\n\n🔒 Требуется ${rowData.requiredPoints} очков в предыдущих строках`;
+                }
+                if (isTalentLocked) {
+                    tooltipText += `\n\n🔒 Не выполнены требования таланта`;
+                }
+                
+                talentDiv.setAttribute('data-tooltip', tooltipText);
                 
                 talentDiv.addEventListener('mouseenter', ui.showTooltip.bind(ui));
                 talentDiv.addEventListener('mouseleave', ui.hideTooltip.bind(ui));
-                talentDiv.addEventListener('click', () => this.toggleTalent(talent.id, talent.max, talent.req));
+                
+                if (!isRowLocked && !isTalentLocked) {
+                    talentDiv.addEventListener('click', () => this.toggleTalent(talent.id, talent.max, talent.req, rowIndex));
+                }
                 
                 rowDiv.appendChild(talentDiv);
             });
@@ -151,6 +169,26 @@ const calculator = {
         });
     },
 
+    isRowAvailable(rowIndex) {
+        if (rowIndex === 0) return true; // Первая строка всегда доступна
+        
+        const classData = classesData[this.currentClass];
+        const rowData = classData.talents[rowIndex];
+        
+        if (!rowData.requiredPoints) return true;
+        
+        // Считаем очки в предыдущих строках
+        let pointsInPreviousRows = 0;
+        for (let i = 0; i < rowIndex; i++) {
+            const previousRow = classData.talents[i];
+            previousRow.talents.forEach(talent => {
+                pointsInPreviousRows += this.selectedTalents[talent.id] || 0;
+            });
+        }
+        
+        return pointsInPreviousRows >= rowData.requiredPoints;
+    },
+
     isMilestoneAvailable(milestoneIndex, row, col) {
         if (row === 4 && col === 4) return true;
         
@@ -164,8 +202,19 @@ const calculator = {
         });
     },
 
-    toggleTalent(talentId, maxLevel, requirements) {
-        if (this.talentPoints >= milestonesData.settings.maxTalentPoints) return;
+    toggleTalent(talentId, maxLevel, requirements, rowIndex) {
+        if (this.talentPoints >= milestonesData.settings.maxTalentPoints && !this.selectedTalents[talentId]) {
+            alert(`Достигнут лимит очков талантов: ${milestonesData.settings.maxTalentPoints}`);
+            return;
+        }
+        
+        // Проверяем доступность строки
+        if (!this.isRowAvailable(rowIndex)) {
+            const classData = classesData[this.currentClass];
+            const rowData = classData.talents[rowIndex];
+            alert(`Для изучения талантов этой строки требуется ${rowData.requiredPoints} очков в предыдущих строках!`);
+            return;
+        }
         
         const currentLevel = this.selectedTalents[talentId] || 0;
         const isLocked = requirements.length > 0 && !requirements.every(req => this.selectedTalents[req] > 0);
@@ -185,6 +234,7 @@ const calculator = {
         
         ui.updatePoints();
         this.renderBranches();
+        this.updateBuildCode();
     },
 
     toggleMilestone(milestoneId, row, col) {
@@ -432,8 +482,8 @@ const calculator = {
         if (!this.currentClass) return null;
         
         const classData = classesData[this.currentClass];
-        for (const row of classData.talents) {
-            for (const talent of row) {
+        for (const rowData of classData.talents) {
+            for (const talent of rowData.talents) {
                 if (talent.id === talentId) {
                     return talent;
                 }
